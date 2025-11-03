@@ -8,9 +8,6 @@ services:
         image: 'sail-8.4/app'
         extra_hosts:
             - 'host.docker.internal:host-gateway'
-        ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
@@ -28,8 +25,6 @@ services:
             - valkey
     pgsql:
         image: 'postgres:18-alpine'
-        ports:
-            - '${FORWARD_DB_PORT:-5432}:5432'
         environment:
             PGPASSWORD: '${DB_PASSWORD:-secret}'
             POSTGRES_DB: '${DB_DATABASE}'
@@ -53,8 +48,6 @@ services:
             timeout: 5s
     typesense:
         image: 'typesense/typesense:27.1'
-        ports:
-            - '${FORWARD_TYPESENSE_PORT:-8108}:8108'
         environment:
             TYPESENSE_DATA_DIR: '${TYPESENSE_DATA_DIR:-/typesense-data}'
             TYPESENSE_API_KEY: '${TYPESENSE_API_KEY:-xyz}'
@@ -73,15 +66,10 @@ services:
             timeout: 7s
     mailpit:
         image: 'axllent/mailpit:latest'
-        ports:
-            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
-            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
         networks:
             - sail
     valkey:
         image: 'valkey/valkey:alpine'
-        ports:
-            - '${FORWARD_VALKEY_PORT:-6379}:6379'
         volumes:
             - 'sail-valkey:/data'
         networks:
