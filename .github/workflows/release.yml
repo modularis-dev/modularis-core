@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows: ['Run Tests']
+    types: [completed]
+    branches:
+      - 'main'
+
+jobs:
+  tag_release:
+    name: 'Release - Tag'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+      - name: Release - Add Tag
+        run: |
+          RELEASE_VERSION="$(npx git-conventional-commits version)"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "v$RELEASE_VERSION" -m "Release v$RELEASE_VERSION"
+          git push origin "v$RELEASE_VERSION"
