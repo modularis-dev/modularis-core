@@ -31,7 +31,11 @@
 		"mailpit:1025", // Mailpit
 		"mailpit:8025", // Mailpit Web
 		"valkey:6379" // Valkey
-	]
+	],
+	"features": {
+		"ghcr.io/dhoeric/features/act:1": {},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
+	}
 	// "runServices": [],
 	// "shutdownAction": "none",
 }

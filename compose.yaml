@@ -84,6 +84,8 @@ services:
 networks:
     sail:
         driver: bridge
+        driver_opts:
+            com.docker.network.driver.mtu: 1400
 volumes:
     sail-pgsql:
         driver: local
