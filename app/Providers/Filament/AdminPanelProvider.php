@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use DutchCodingCompany\FilamentSocialite\FilamentSocialitePlugin;
+use DutchCodingCompany\FilamentSocialite\Provider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -26,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->path('')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -54,6 +56,18 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->plugin(FilamentSocialitePlugin::make()
+                ->registration(true)
+                ->rememberLogin(false)
+                ->showDivider(true)
+                ->providers([
+                    Provider::make('discord')
+                        ->label('Discord')
+                        ->icon('fab-discord')
+                        ->color(Color::Blue)
+                        ->outlined(false)
+                        ->stateless(false),
+                ]));
     }
 }
