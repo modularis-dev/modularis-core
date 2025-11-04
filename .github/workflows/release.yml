@@ -29,5 +29,6 @@ jobs:
       - name: Release - Add Tag
         run: |
           RELEASE_VERSION="$(npx git-conventional-commits version)"
-          git tag -a "v$RELEASE_VERSION" -m "Release v$RELEASE_VERSION"
+          RELEASE_CHANGELOG="$(npx git-conventional-commits changelog)"
+          git tag -a "v$RELEASE_VERSION" -m "$RELEASE_CHANGELOG"
           git push origin "v$RELEASE_VERSION"
