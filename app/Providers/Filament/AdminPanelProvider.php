@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Actions\User\CreateUser;
 use DutchCodingCompany\FilamentSocialite\FilamentSocialitePlugin;
 use DutchCodingCompany\FilamentSocialite\Provider;
 use Filament\Http\Middleware\Authenticate;
@@ -20,6 +21,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use SocialiteProviders\Manager\OAuth2\User;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -68,6 +70,12 @@ class AdminPanelProvider extends PanelProvider
                         ->color(Color::Blue)
                         ->outlined(false)
                         ->stateless(false),
-                ]));
+                ])
+                ->createUserUsing(function (string $provider, User $oauthUser, FilamentSocialitePlugin $plugin) {
+                    if ($provider === 'discord') {
+                        return CreateUser::run($oauthUser->user['global_name'], $oauthUser->email, $oauthUser->avatar, null, true);
+                    }
+                })
+            );
     }
 }
