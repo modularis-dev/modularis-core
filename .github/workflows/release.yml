@@ -7,6 +7,10 @@ on:
     branches:
       - 'main'
 
+permissions:
+  contents: write
+  actions: write
+
 jobs:
   tag_release:
     name: 'Release - Tag'
@@ -17,10 +21,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22.x"
+      - name: Configure git authentication
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/modularis-dev/modularis-core.git
       - name: Release - Add Tag
         run: |
           RELEASE_VERSION="$(npx git-conventional-commits version)"
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
           git tag -a "v$RELEASE_VERSION" -m "Release v$RELEASE_VERSION"
           git push origin "v$RELEASE_VERSION"
