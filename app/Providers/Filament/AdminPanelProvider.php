@@ -15,13 +15,15 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use SocialiteProviders\Manager\OAuth2\User;
+use Laravel\Socialite\Contracts\User;
+use SocialiteProviders\Manager\OAuth2\User as OAuth2User;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -71,10 +73,14 @@ class AdminPanelProvider extends PanelProvider
                         ->outlined(false)
                         ->stateless(false),
                 ])
-                ->createUserUsing(function (string $provider, User $oauthUser, FilamentSocialitePlugin $plugin) {
+                ->createUserUsing(function (string $provider, User $oauthUser, FilamentSocialitePlugin $plugin): Authenticatable {
                     if ($provider === 'discord') {
-                        return CreateUser::run($oauthUser->user['global_name'], $oauthUser->email, $oauthUser->avatar, null, true);
+                        if ($oauthUser instanceof OAuth2User) {
+                            return CreateUser::run($oauthUser->user['global_name'], $oauthUser->getEmail(), $oauthUser->getAvatar(), null, true);
+                        }
                     }
+
+                    return CreateUser::run($oauthUser->getNickname(), $oauthUser->getEmail(), $oauthUser->getAvatar(), null, true);
                 })
             );
     }
