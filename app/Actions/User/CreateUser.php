@@ -14,11 +14,7 @@ class CreateUser
 
     public function handle(array $properties, bool $alreadyValidated = false): User
     {
-        if ($alreadyValidated) {
-            $validated = $properties;
-        } else {
-            $validated = Validator::validate($properties, $this->rules());
-        }
+        $validated = Validator::validate($properties, $this->rules());
 
         $user = new User([
             'name' => $validated['name'],

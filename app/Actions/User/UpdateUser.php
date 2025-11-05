@@ -12,11 +12,7 @@ class UpdateUser
 
     public function handle(User $user, array $properties, bool $alreadyValidated = false): User
     {
-        if ($alreadyValidated) {
-            $validated = $properties;
-        } else {
-            $validated = Validator::validate($properties, $this->rules());
-        }
+        $validated = Validator::validate($properties, $this->rules());
 
         $user->update($validated);
 
