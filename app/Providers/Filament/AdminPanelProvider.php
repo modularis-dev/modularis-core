@@ -76,11 +76,23 @@ class AdminPanelProvider extends PanelProvider
                 ->createUserUsing(function (string $provider, User $oauthUser, FilamentSocialitePlugin $plugin): Authenticatable {
                     if ($provider === 'discord') {
                         if ($oauthUser instanceof OAuth2User) {
-                            return CreateUser::run($oauthUser->user['global_name'], $oauthUser->getEmail(), $oauthUser->getAvatar(), null, true);
+                            return CreateUser::run([
+                                'name' => $oauthUser->user['global_name'],
+                                'email' => $oauthUser->getEmail(),
+                                'avatar_url' => $oauthUser->getAvatar(),
+                                'password' => null,
+                                'verify' => true,
+                            ]);
                         }
                     }
 
-                    return CreateUser::run($oauthUser->getNickname(), $oauthUser->getEmail(), $oauthUser->getAvatar(), null, true);
+                    return CreateUser::run([
+                        'name' => $oauthUser->getNickname(),
+                        'email' => $oauthUser->getEmail(),
+                        'avatar_url' => $oauthUser->getAvatar(),
+                        'password' => null,
+                        'verify' => true,
+                    ]);
                 })
             );
     }
